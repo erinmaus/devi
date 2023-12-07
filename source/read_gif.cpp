@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <utility>
+#include <stdexcept>
 #include "devi/read_gif.hpp"
 
 devi::GIFImageReader::GIFImageReader(LuaFile&& file) : file(std::move(file))
