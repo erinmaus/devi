@@ -142,12 +142,12 @@ function Image:_render(frame)
     love.graphics.setShader()
     love.graphics.setCanvas(self._canvas)
 
-    love.graphics.setBlendMode('replace')
-    if frame.dispose == 'none' and self._currentImage then
+    love.graphics.setBlendMode("replace")
+    if frame.dispose == "none" and self._currentImage then
         love.graphics.draw(self._currentImage, 0, 0)
-    elseif frame.dispose == 'background' then
+    elseif frame.dispose == "background" then
         love.graphics.clear(0, 0, 0, 0)
-    elseif frame.dispose == 'previous' and self._previousImage then
+    elseif frame.dispose == "previous" and self._previousImage then
         love.graphics.draw(self._previousImage, 0, 0)
     else
         -- Error state.
