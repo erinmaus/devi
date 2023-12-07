@@ -1,5 +1,6 @@
 #include <csetjmp>
 #include <cstdint>
+#include <stdexcept>
 #include <utility>
 #include "devi/read_apng.hpp"
 
