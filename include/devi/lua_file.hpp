@@ -14,6 +14,8 @@ namespace devi
     private:
         lua_State* L;
         int reference;
+        std::vector<std::uint8_t> read_buffer;
+        std::size_t read_offset = 0;
 
         void handle_error(int result);
 

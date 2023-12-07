@@ -100,6 +100,16 @@ local function newFile(file, mode)
     end
 end
 
+local function newBuffer(file)
+    if type(file) == "string" then
+        return love.filesystem.read(file)
+    elseif file:typeOf("Data") then
+        return file:getString()
+    else
+        error("expected filename or Data")
+    end
+end
+
 local Image = {}
 
 function Image:_init()
@@ -215,9 +225,16 @@ local function tryLoad(format, filename, config)
 
     local success, file, reader
     
-    success, file = pcall(newFile, filename, "r")
-    if not success then
-        return false
+    if config.file then
+        success, file = pcall(newFile, filename, "r")
+        if not success then
+            return false
+        end
+    else
+        success, file = pcall(newBuffer, filename)
+        if not success then
+            return false
+        end
     end
 
     success, reader = pcall(NativeImageReader, file)
@@ -230,7 +247,7 @@ local function tryLoad(format, filename, config)
         _reader = reader,
         _currentTime = love.timer.getTime(),
         _currentDelay = 0,
-        _minDelay = config.minDelay or DEFAULT_CONFIG.minDelay
+        _minDelay = config.minDelay or DEFAULT_CONFIG.minDelay,
     }, ImageType)
     result:_init()
 

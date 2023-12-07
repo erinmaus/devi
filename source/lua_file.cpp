@@ -7,18 +7,32 @@
 
 devi::LuaFile::LuaFile(lua_State* L, int index) : L(L)
 {
-    if (lua_type(L, index) != LUA_TTABLE)
+    if (lua_type(L, index) == LUA_TSTRING)
     {
-        luaL_error(L, "expected table at index %d", index);
-    }
+        reference = -1;
 
-    lua_pushvalue(L, index);
-    reference = luaL_ref(L, LUA_REGISTRYINDEX);
+        std::size_t size;
+        auto value = luaL_checklstring(L, index, &size);
+
+        read_buffer.resize(size);
+        std::memcpy(&read_buffer[0], value, size);
+    }
+    else if (lua_type(L, index) == LUA_TTABLE)
+    {
+        lua_pushvalue(L, index);
+        reference = luaL_ref(L, LUA_REGISTRYINDEX);
+    }
+    else
+    {
+        luaL_error(L, "expected table or string at index %d", index);
+    }
 }
 
-devi::LuaFile::LuaFile(LuaFile&& other) noexcept : L(other.L), reference(other.reference)
+devi::LuaFile::LuaFile(LuaFile&& other) noexcept : L(other.L), reference(other.reference), read_buffer(other.read_buffer), read_offset(other.read_offset)
 {
     other.L = nullptr;
+    other.read_buffer.clear();
+    other.read_offset = 0;
 }
 
 devi::LuaFile::~LuaFile()
@@ -53,6 +67,17 @@ void devi::LuaFile::handle_error(int result)
 
 std::size_t devi::LuaFile::read(std::uint8_t* buffer, std::size_t size)
 {
+    if (reference < 0)
+    {
+        auto end_offset = std::min(read_offset + size, read_buffer.size());
+        auto num_bytes_read = end_offset - read_offset;
+
+        std::memcpy(buffer, &read_buffer[read_offset], num_bytes_read);
+
+        read_offset = end_offset;
+        return num_bytes_read;
+    }
+
     lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
 
     lua_getfield(L, -1, "read");
@@ -81,6 +106,11 @@ std::size_t devi::LuaFile::read(std::uint8_t* buffer, std::size_t size)
 
 std::size_t devi::LuaFile::write(const std::uint8_t* buffer, std::size_t size)
 {
+    if (reference < 0)
+    {
+        throw std::runtime_error("cannot write to read-only buffer");
+    }
+
     lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
 
     lua_getfield(L, -1, "write");
@@ -108,6 +138,11 @@ std::size_t devi::LuaFile::write(const std::uint8_t* buffer, std::size_t size)
 
 void devi::LuaFile::flush()
 {
+    if (reference < 0)
+    {
+        throw std::runtime_error("cannot flush read-only buffer");
+    }
+
     lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
 
     lua_getfield(L, -1, "flush");
@@ -120,6 +155,12 @@ void devi::LuaFile::flush()
 
 void devi::LuaFile::open()
 {
+    if (reference < 0)
+    {
+        read_offset = 0;
+        return;
+    }
+
     lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
 
     lua_getfield(L, -1, "open");
@@ -132,6 +173,12 @@ void devi::LuaFile::open()
 
 void devi::LuaFile::close()
 {
+    if (reference < 0)
+    {
+        read_offset = read_buffer.size();
+        return;
+    }
+
     lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
 
     lua_getfield(L, -1, "close");
