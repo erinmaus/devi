@@ -1,0 +1,82 @@
+name: build
+
+on:
+  push:
+    branches:
+      - 'master'
+      - '**-ci'
+  workflow_dispatch: null
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Install Lua 5.1
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1.5"
+      -
+        name: Build
+        run: |
+          make prefix=$(pwd)/.lua
+      -
+        name: Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: |
+            devi
+            build/devi.so
+  macos:
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Install Lua 5.1
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1.5"
+      -
+        name: Build
+        run: |
+          make prefix=$(pwd)/.lua
+      -
+        name: Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: |
+            devi
+            build/devi.dylib
+  windows:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          update: true
+          install: git mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake make unzip mingw-w64-x86_64-boost mingw-w64-x86_64-glm zip
+      -
+        name: Build code
+        run: |
+          make prefix=$(pwd)/.lua
+      -
+        name: Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: itsyrealm_windows
+          path: |
+            devi
+            build/devi.dll
