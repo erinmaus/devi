@@ -51,17 +51,54 @@ end
 
 local FileReaderType = { __index = FileReader }
 
-local function newFile(filename, mode)
-    return setmetatable({
-        _filename = filename,
-        _mode = mode
-    }, FileReaderType)
+local DataReader = {}
+function DataReader:open()
+    self._offset = 0
 end
 
-local READERS = {
-    ["apng"] = APNGImageReader,
-    ["gif"] = GIFImageReader
-}
+function DataReader:close()
+    self._offset = nil
+end
+
+function DataReader:read(numBytes)
+    if not self._offset then
+        error("file not open")
+    end
+
+    local buffer = self._data:getString():sub(self._offset + 1, self._offset + numBytes)
+    self._offset = self._offset + numBytes
+
+    return buffer
+end
+
+function DataReader:write()
+    error("cannot write to data")
+end
+
+function DataReader:flush()
+    -- Nothing,
+end
+
+local DataReaderType = { __index = DataReader }
+
+local function newFile(file, mode)
+    if type(file) == "string" then
+        return setmetatable({
+            _filename = file,
+            _mode = mode
+        }, FileReaderType)
+    elseif file:typeOf("Data") then
+        if mode == "r" then
+            return setmetatable({
+                _data = file
+            }, DataReaderType)
+        else
+            error("cannot write to data")
+        end
+    else
+        error("expected filename or Data")
+    end
+end
 
 local Image = {}
 
@@ -164,23 +201,71 @@ local DEFAULT_CONFIG = {
     minDelay = 1 / 60
 }
 
-function devi.newImage(format, filename, config)
-    config = config or DEFAULT_CONFIG
+local READERS = {
+    ["png"] = APNGImageReader,
+    ["gif"] = GIFImageReader
+}
 
+local function tryLoad(format, filename, config)
     local NativeImageReader = READERS[format]
 
     if not NativeImageReader then
-        error(string.format("unsupported image reader format: %s", tostring(format)), 1)
+        return false
+    end
+
+    local success, file, reader
+    
+    success, file = pcall(newFile, filename, "r")
+    if not success then
+        return false
+    end
+
+    success, reader = pcall(NativeImageReader, file)
+    if not success then
+        return false
     end
 
     local result = setmetatable({
         _format = format,
-        _reader = NativeImageReader(newFile(filename, 'r')),
+        _reader = reader,
         _currentTime = love.timer.getTime(),
         _currentDelay = 0,
         _minDelay = config.minDelay or DEFAULT_CONFIG.minDelay
     }, ImageType)
     result:_init()
+
+    return result
+end
+
+function devi.newImage(file, config)
+    config = config or DEFAULT_CONFIG
+    
+    local defaultFormat = config.format or (type(file) == "string" and file:match(".*%.(%w+)$"))
+    defaultFormat = defaultFormat and defaultFormat:lower()
+
+    local result
+    if defaultFormat then
+        result = tryLoad(defaultFormat, file, config)
+    end
+
+    if not result then
+        for format in pairs(READERS) do
+            if format ~= defaultFormat then
+                result = tryLoad(format, file, config)
+                if result then
+                    break
+                end
+            end
+        end
+    end
+
+    if not result then
+        if type(file) == "string" then
+            error(string.format("couldn't load %s: not a valid animated image", file))
+        else
+            error(string.format("couldn't load %s: not a valid animated image", file:type()))
+        end
+    end
 
     return result
 end
