@@ -148,6 +148,7 @@ bool devi::GIFImageReader::read(Frame& frame)
                     switch (graphics_control_block.DisposalMode)
                     {
                         case DISPOSE_DO_NOT:
+                        default:
                             frame.dispose_op = DISPOSE_OP_NONE;
                             break;
                         case DISPOSE_BACKGROUND:
@@ -189,7 +190,7 @@ bool devi::GIFImageReader::read(Frame& frame)
         throw std::runtime_error("error reading GIF frame");
     }
 
-    frame.blend_op = BLEND_OP_SOURCE;
+    frame.blend_op = BLEND_OP_OVER;
     frame.x = gif->Image.Left;
     frame.y = gif->Image.Top;
     frame.width = gif->Image.Width;

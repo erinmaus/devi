@@ -22,11 +22,12 @@ end
 
 ## Documentaion
 
-`image = devi.newImage(file, { minDelay = 0, format = "png" })`
+`image = devi.newImage(file, { minDelay = 0, format = "png", file = false })`
 * `file` should point to a valid APNG or GIF or be a LÖVE `Data` object containing a valid APNG or GIF.
 * A second, optional parameter is a config table:
   * `minDelay` is the minimum time a frame from a GIF or APNG can last. **Be warned, if set to 0, an image with all 0 delays will freeze the game!**
-  * Format can be `gif` or `png`. This is only useful if the file lacks at extension or if you pass in a LÖVE `Data` object. devi will try and determine the right format even if this value is not provided or wrong.
+  * `format` can be `gif` or `png`. This is only useful if the file lacks at extension or if you pass in a LÖVE `Data` object. devi will try and determine the right format even if this value is not provided or wrong.
+  * If `file` is true, the file will be streamed. **This is very slow at the moment, but does use a lot less memory.** If false or not provided, then (if a filename is provided), the entire file will be read into a buffer and used to parse images.
 
 ```image:getWidth()```
 * Returns the width of the image.
