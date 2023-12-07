@@ -139,6 +139,8 @@ function Image:_render(frame)
     love.graphics.push('all')
 
     love.graphics.origin()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setScissor()
     love.graphics.setShader()
     love.graphics.setCanvas(self._canvas)
 
