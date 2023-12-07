@@ -47,7 +47,7 @@ jobs:
         name: Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: linux
+          name: macos
           path: |
             devi
             build/devi.dylib
@@ -75,7 +75,7 @@ jobs:
         name: Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: itsyrealm_windows
+          name: windows
           path: |
             devi
             build/devi.dll
