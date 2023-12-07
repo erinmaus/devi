@@ -4,7 +4,7 @@
 #define DEVI_LUA_FILE_HPP
 
 #include <cstdint>
-#include <span>
+#include <vector>
 #include "devi.hpp"
 
 namespace devi
