@@ -20,6 +20,9 @@ function love.draw()
 end
 ```
 
+### Notes for Windows
+If you use the builds from Github Actions, `devi.dll` and and all other DLLs provided will have to be put in the same folder as `love.exe` (fused or not). You'll have to build with Visual Studio if you want just a static DLL. (This is an exercise left to the reader.)
+
 ## Documentaion
 
 `image = devi.newImage(file, { minDelay = 0, format = "png", file = false })`

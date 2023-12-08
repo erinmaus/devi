@@ -34,11 +34,6 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
-        name: Install Lua 5.1
-        uses: leafo/gh-actions-lua@v10
-        with:
-          luaVersion: "5.1.5"
-      -
         name: Build
         run: |
           make luajit
@@ -71,6 +66,10 @@ jobs:
         run: |
           make luajit
           make LUA_LIB=:lua51.dll all
+          cp /mingw64/bin/libgcc_s_seh-1.dll ./build/libgcc_s_seh-1.dll
+          cp /mingw64/bin/libwinpthread-1.dll ./build/libwinpthread-1.dll
+          cp /mingw64/bin/libstdc++-6.dll ./build/libstdc++-6.dll
+          cp /mingw64/bin/libbz2-1.dll ./build/libbz2-1.dll
       -
         name: Artifact
         uses: actions/upload-artifact@v3
@@ -79,3 +78,7 @@ jobs:
           path: |
             devi
             build/devi.dll
+            build/libgcc_s_seh-1.dll
+            build/libwinpthread-1.dll
+            build/libstdc++-6.dll
+            build/libbz2-1.dll
