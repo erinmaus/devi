@@ -13,7 +13,7 @@ ifneq ($(MSYS_VERSION),0)
 	LIB_EXT := a
 	LDFLAGS += -shared
 	LUAJIT_LIB := lua51.$(SHARED_LIB_EXT)
-	DEVI_LDFLAGS := -shared
+override DEVI_LDFLAGS := -shared
 else
 	ifeq ($(shell uname),Darwin)
 		SHARED_LIB_EXT := dylib
@@ -43,17 +43,17 @@ else
 	else
 		SHARED_LIB_EXT := so
 		LIB_EXT := a
-		DEVI_CXXFLAGS := -fPIC
-		DEVI_LDFLAGS := -shared -fPIC
+override DEVI_CXXFLAGS := -fPIC
+override DEVI_LDFLAGS := -shared -fPIC
 		LUAJIT_LIB := libluajit.$(SHARED_LIB_EXT)
 	endif
 endif
 
 ifeq ($(BUILD),DEBUG)
-	DEVI_CXXFLAGS += -g3 -O0
-	DEVI_LDFLAGS += -g3
+override DEVI_CXXFLAGS += -g3 -O0
+override DEVI_LDFLAGS += -g3
 else
-	DEVI_CXXFLAGS += -O3
+override DEVI_CXXFLAGS += -O3
 endif
 
 LIBPNG_VERSION := 1.6.40
