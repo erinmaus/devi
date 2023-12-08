@@ -14,7 +14,7 @@ ifneq ($(MSYS_VERSION),0)
 	LIB_EXT := a
 	LDFLAGS += -shared
 	LUAJIT_LIB := lua51.$(SHARED_LIB_EXT)
-	LIBS += -lpng16 -lzstatic -lgif
+	LIBS += -lpng16 -lzlibstatic -lgif
 override DEVI_LDFLAGS := -shared
 else
 	LIBS := -lpng16 -lz -lgif
