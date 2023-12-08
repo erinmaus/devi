@@ -117,7 +117,7 @@ $(BUILD_DIR)/$(ZLIB_FILE)-build: $(BUILD_DIR)/$(ZLIB_FILE)/CMakeLists.txt
 $(BUILD_DIR)/lib/libz.$(LIB_EXT): $(BUILD_DIR)/$(ZLIB_FILE)-build
 	cmake --build $(BUILD_DIR)/$(ZLIB_FILE)-build --parallel
 	cmake --install $(BUILD_DIR)/$(ZLIB_FILE)-build --prefix $(BUILD_DIR)
-	find $(BUILD_DIR)/lib -name 'libz*.$(SHARED_LIB_EXT)' -delete
+	find $(BUILD_DIR)/lib -iname 'libz*.$(SHARED_LIB_EXT)*' -delete
 	touch $(BUILD_DIR)/lib/libz.$(LIB_EXT)
 
 # Patch & build libpng
@@ -184,7 +184,7 @@ endif
 else
 	cmake --build $(BUILD_DIR)/$(LIBPNG_FILE)-build --parallel
 	cmake --install $(BUILD_DIR)/$(LIBPNG_FILE)-build --prefix $(BUILD_DIR)
-	find $(BUILD_DIR)/lib -name 'libpng*.$(SHARED_LIB_EXT)' -delete
+	find $(BUILD_DIR)/lib -iname 'libpng*.$(SHARED_LIB_EXT)*' -delete
 endif
 
 # Build giflib
