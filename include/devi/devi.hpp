@@ -11,6 +11,12 @@ extern "C"
     #include "luaconf.h"
 }
 
+#ifdef _WIN32
+    #define DEVI_EXPORT __declspec(dllexport)
+#else
+    #define DEVI_EXPORT
+#endif
+
 namespace devi
 {
     void luax_pushcfunction(lua_State* L, lua_CFunction func);

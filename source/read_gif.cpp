@@ -247,7 +247,7 @@ static int devi_gif_image_reader_new(lua_State* L)
 }
 
 extern "C"
-int luaopen_devi_GIFImageReader(lua_State *L)
+DEVI_EXPORT int luaopen_devi_GIFImageReader(lua_State *L)
 {
     devi::luax_pushcfunction(L, &devi_gif_image_reader_new);
 
