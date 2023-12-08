@@ -43,8 +43,8 @@ else
 	else
 		SHARED_LIB_EXT := so
 		LIB_EXT := a
-override DEVI_CXXFLAGS := -fPIC
-override DEVI_LDFLAGS := -shared -fPIC
+override DEVI_CXXFLAGS += -fPIC
+override DEVI_LDFLAGS += -shared -fPIC
 		LUAJIT_LIB := libluajit.$(SHARED_LIB_EXT)
 	endif
 endif
