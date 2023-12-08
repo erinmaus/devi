@@ -6,6 +6,7 @@ LUA_LIB := lua
 CPPFLAGS := -I$(BUILD_DIR)/include -Iinclude -I$(PREFIX)/include
 CXXFLAGS := -std=c++20
 LDFLAGS := -L$(BUILD_DIR)/lib -L$(PREFIX)/lib
+LIBS := -l$(LUA_LIB)
 
 MSYS_VERSION := $(if $(findstring Msys, $(shell uname -o)),$(word 1, $(subst ., ,$(shell uname -r))),0)
 ifneq ($(MSYS_VERSION),0)
@@ -13,8 +14,10 @@ ifneq ($(MSYS_VERSION),0)
 	LIB_EXT := a
 	LDFLAGS += -shared
 	LUAJIT_LIB := lua51.$(SHARED_LIB_EXT)
+	LIBS += -lpng16 -lzstatic -lgif
 override DEVI_LDFLAGS := -shared
 else
+	LIBS := -lpng16 -lz -lgif
 	ifeq ($(shell uname),Darwin)
 		SHARED_LIB_EXT := dylib
 		LIB_EXT := a
@@ -232,7 +235,7 @@ $(BUILD_DIR)/%.o: %.cpp $(BUILD_DIR) $(BUILD_DIR)/lib/libgif.$(LIB_EXT) $(BUILD_
 	touch $@
 
 $(BUILD_DIR)/$(BIN): $(OBJ)
-	$(CXX) $(LDFLAGS) $(DEVI_LDFLAGS) $^ -o $@  -l$(LUA_LIB) -lpng16 -lz -lgif
+	$(CXX) $(LDFLAGS) $(DEVI_LDFLAGS) $^ -o $@ $(LIBS)
 
 all: $(BUILD_DIR) $(BUILD_DIR)/$(BIN)
 
