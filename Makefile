@@ -17,7 +17,7 @@ ifneq ($(MSYS_VERSION),0)
 	LIBS += -lpng16 -lzlibstatic -lgif
 override DEVI_LDFLAGS := -shared
 else
-	LIBS := -lpng16 -lz -lgif
+	LIBS += -lpng16 -lz -lgif
 	ifeq ($(shell uname),Darwin)
 		SHARED_LIB_EXT := dylib
 		LIB_EXT := a
