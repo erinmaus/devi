@@ -225,7 +225,6 @@ CPP = $(wildcard source/*.cpp)
 OBJ = $(CPP:%.cpp=$(BUILD_DIR)/%.o)
 DEP = $(OBJ:%.o=%.d)
 BIN = devi.$(SHARED_LIB_EXT)
-LIBS = $(BUILD_DIR)/lib/libgif.$(LIB_EXT) $(BUILD_DIR)/lib/$(LIBPNG_LIB).$(LIB_EXT)
 
 -include $(DEP)
 
