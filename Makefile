@@ -28,7 +28,7 @@ else
 			CFLAGS += -isysroot $(SYSROOT) -miphoneos-version-min=13.0
 			CXXFLAGS += -arch arm64 -fPIC -isysroot $(SYSROOT) -miphoneos-version-min=13.0
 			LDFLAGS += -arch arm64 -dynamiclib -all_load -fPIC -isysroot $(SYSROOT)
-			CMAKE_OPTS := -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_OSX_SYSROOT=$(SYSROOT)
+			CMAKE_OPTS := -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_OSX_SYSROOT=$(SYSROOT) -DCMAKE_OSX_DEPLOYMENT_TARGET="13.0"
 			CC := $(shell xcrun --sdk iphoneos --find clang)
 			CXX := $(shell xcrun --sdk iphoneos --find clang++)
 			LD := $(shell xcrun --sdk iphoneos --find ld)
@@ -203,7 +203,7 @@ $(BUILD_DIR)/$(GIFLIB_FILE)/Makefile: $(BUILD_DIR)/$(GIFLIB_FILE).tar.gz
 $(BUILD_DIR)/$(GIFLIB_FILE)/libgif.$(LIB_EXT): $(BUILD_DIR)/$(GIFLIB_FILE)/Makefile
 ifeq ($(shell uname),Darwin)
 ifeq ($(PLATFORM),IOS)
-	cd $(BUILD_DIR)/$(GIFLIB_FILE) && make CC="$(CC)" LD="$(LD)" CFLAGS="$(CFLAGS) -fPIC" LDFLAGS="$(LDFLAGS) -fPIC" clean libgif.$(LIB_EXT)
+	cd $(BUILD_DIR)/$(GIFLIB_FILE) && make CC="$(CC)" LD="$(LD)" CFLAGS="$(CFLAGS) -fPIC -miphoneos-version-min=13.0" LDFLAGS="$(LDFLAGS) -fPIC" clean libgif.$(LIB_EXT)
 else
 	cd $(BUILD_DIR)/$(GIFLIB_FILE) && make CFLAGS="$(CFLAGS)" clean libgif.$(LIB_EXT)
 endif
