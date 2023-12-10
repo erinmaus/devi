@@ -27,7 +27,7 @@ else
 			SYSROOT=$(shell xcrun --sdk iphoneos --show-sdk-path)
 			CFLAGS += -isysroot $(SYSROOT) -miphoneos-version-min=13.0
 			CXXFLAGS += -arch arm64 -fPIC -isysroot $(SYSROOT) -miphoneos-version-min=13.0
-			LDFLAGS += -arch arm64 -dynamiclib -all_load -fPIC -isysroot $(SYSROOT)
+			LDFLAGS += -arch arm64 -dynamiclib -all_load -fPIC -isysroot $(SYSROOT) -miphoneos-version-min=13.0
 			CMAKE_OPTS := -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_OSX_SYSROOT=$(SYSROOT) -DCMAKE_OSX_DEPLOYMENT_TARGET="13.0"
 			CC := $(shell xcrun --sdk iphoneos --find clang)
 			CXX := $(shell xcrun --sdk iphoneos --find clang++)
