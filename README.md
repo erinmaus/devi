@@ -11,6 +11,7 @@ devi is a GIF/APNG image loading library for LÖVE.
 local devi = require "devi"
 
 function love.load()
+    devi.init(love.filesystem.getSaveDirectory())
     gif = devi.newImage("coolbear.gif")
 end
 
