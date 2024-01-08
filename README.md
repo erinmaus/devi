@@ -5,7 +5,7 @@ devi is a GIF/APNG image loading library for LÖVE.
 ## Usage
 
 1. Add the `devi` folder to your LÖVE project.
-2. Add the `devi.dll`/`devi.dylib`/`devi.so` (depending on your platform) to a place that can be found by `love` (see the handy function [love.filesystem.setCRequirePath](https://love2d.org/wiki/love.filesystem.setCRequirePath) on the wiki).
+2. Add the `devi.dll`/`devi.dylib`/`devi.so` (depending on your platform) to a place that can be found by `love`.
 
 ```lua
 local devi = require "devi"
@@ -20,10 +20,15 @@ function love.draw()
 end
 ```
 
-### Notes for Windows
-If you use the builds from Github Actions, `devi.dll` and and all other DLLs provided will have to be put in the same folder as `love.exe` (fused or not). You'll have to build with Visual Studio if you want just a static DLL. (This is an exercise left to the reader.)
+If you want to run an example, download the latest cutting edge devi shared libraries from [GitHub Actions](https://github.com/erinmaus/devi/actions) (**you need to be signed into GitHub to download these**) or the latest stable shared libraries from [GitHub releases](https://github.com/erinmaus/devi/releases) (**anyone can download these**). Copy the shared libraries (`devi.dll`, `devi.dylib`, and `devi.so` to `bin`). Then run `love .` from the terminal/command line in the same directory as `main.lua`.
+
+In your own project, you might want to do things differently. This is not the only way to use devi! See the documentation for `devi.init` below.
 
 ## Documentaion
+
+`devi.init(path)`
+* Initializes the devi library. **This is only optional if you previously set up the `package.cpath` correctly yourself (*advanced users only!*) or have the devi shared libraries next to the LOVE executable (i.e., on Windows when fusing).**
+* `path`: A string pointing to the directory the devi shared libraries are stored. If you follow the example in the devi `main.lua` and copy the DLLs from the `.love` to the save directory, then this argument should be `love.filesystem.getSaveDirectory()`.
 
 `image = devi.newImage(file, { minDelay = 0, format = "png", file = false })`
 * `file` should point to a valid APNG or GIF or be a LÖVE `Data` object containing a valid APNG or GIF.

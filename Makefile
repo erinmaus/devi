@@ -12,10 +12,10 @@ MSYS_VERSION := $(if $(findstring Msys, $(shell uname -o)),$(word 1, $(subst ., 
 ifneq ($(MSYS_VERSION),0)
 	SHARED_LIB_EXT := dll
 	LIB_EXT := a
-	LDFLAGS += -shared
+	LDFLAGS += -shared -static
 	LUAJIT_LIB := lua51.$(SHARED_LIB_EXT)
 	LIBS += -lpng16 -lzlibstatic -lgif
-override DEVI_LDFLAGS := -shared
+override DEVI_LDFLAGS := -shared -static
 else
 	LIBS += -lpng16 -lz -lgif
 	ifeq ($(shell uname),Darwin)
