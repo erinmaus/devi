@@ -1,6 +1,3 @@
-local APNGImageReader = require "devi.APNGImageReader"
-local GIFImageReader = require "devi.GIFImageReader"
-
 local devi = {}
 
 local FileReader = {}
@@ -213,10 +210,7 @@ local DEFAULT_CONFIG = {
     minDelay = 1 / 60
 }
 
-local READERS = {
-    ["png"] = APNGImageReader,
-    ["gif"] = GIFImageReader
-}
+local READERS = {}
 
 local function tryLoad(format, filename, config)
     local NativeImageReader = READERS[format]
@@ -256,7 +250,29 @@ local function tryLoad(format, filename, config)
     return result
 end
 
+function devi.init(sourcePath)
+    if sourcePath then
+        local newCPath = string.format(
+            "%s/?.dll;%s/?.so;%s/?.dylib;%s",
+            sourcePath,
+            sourcePath,
+            sourcePath,
+            package.cpath)
+        package.cpath = newCPath
+    end
+
+    local APNGImageReader = require "devi.APNGImageReader"
+    local GIFImageReader = require "devi.GIFImageReader"
+
+    READERS.png = APNGImageReader
+    READERS.gif = GIFImageReader
+end
+
 function devi.newImage(file, config)
+    if not next(READERS, nil) then
+        devi.init()
+    end
+
     config = config or DEFAULT_CONFIG
     
     local defaultFormat = config.format or (type(file) == "string" and file:match(".*%.(%w+)$"))
