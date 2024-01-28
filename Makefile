@@ -109,7 +109,7 @@ override ZLIB_FILE := zlib-$(ZLIB_VERSION)
 
 $(BUILD_DIR)/$(ZLIB_FILE).tar.gz:
 	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && curl -Lo $(ZLIB_FILE).tar.gz http://zlib.net/zlib-$(ZLIB_VERSION).tar.gz
+	cd $(BUILD_DIR) && curl -Lo $(ZLIB_FILE).tar.gz https://www.zlib.net/fossils/zlib-$(ZLIB_VERSION).tar.gz
 
 $(BUILD_DIR)/$(ZLIB_FILE)/CMakeLists.txt: $(BUILD_DIR)/$(ZLIB_FILE).tar.gz
 	cd $(BUILD_DIR) && tar xzfm $(ZLIB_FILE).tar.gz
